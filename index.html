@@ -259,7 +259,6 @@
                 navLinks.forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); navigateTo(link.getAttribute('href')); }));
                 marketplaceSelector.addEventListener('change', renderTopProducts);
                 
-                // Os botões abaixo são recriados, então os listeners precisam ser delegados ou recriados após a renderização
                 document.body.addEventListener('click', e => {
                     if (e.target.id === 'edit-top5-btn') openTop5Modal();
                     if (e.target.id === 'modal-cancel-btn') modal.close();
@@ -359,39 +358,14 @@
                 return '🤔 <span class="font-semibold">Analisar</span>';
             }
 
-function renderGeneralMetrics() {
+            // CORREÇÃO APLICADA AQUI
+            function renderGeneralMetrics() {
                 let totalRetrasado = 0, totalAnterior = 0, totalAtual = 0;
-                
-                // A mágica acontece aqui:
-                // 1. Object.values(state.momData) pega os dados de TODOS os marketplaces.
-                // 2. .forEach() faz um loop, passando por cada um.
                 Object.values(state.momData).forEach(data => {
-                    // 3. Para cada marketplace (data), pegamos os valores, limpamos (tirando pontos e trocando vírgula),
-                    //    convertemos para número e SOMAMOS (+=) aos totais.
                     totalRetrasado += parseFloat(data.retrasado?.replace(/\./g, '').replace(',', '.')) || 0;
                     totalAnterior += parseFloat(data.anterior?.replace(/\./g, '').replace(',', '.')) || 0;
                     totalAtual += parseFloat(data.atual?.replace(/\./g, '').replace(',', '.')) || 0;
                 });
-
-                const crescimentoGeral = calculateGrowth(totalAnterior, totalAtual);
-                
-                // 4. Finalmente, atualizamos o painel com os totais corretos.
-                generalMetricsContainer.innerHTML = `
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Faturamento Total</p><p class="text-2xl font-bold">R$ ${totalAtual.toLocaleString('pt-BR')}</p></div>
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Crescimento MoM</p><p class="text-2xl font-bold">${crescimentoGeral.text}</p></div>
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Ticket Médio</p><p class="text-2xl font-bold text-gray-400">Em breve</p></div>
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Conversão</p><p class="text-2xl font-bold text-gray-400">Em breve</p></div>`;
-            });
-
-                const crescimentoGeral = calculateGrowth(totalAnterior, totalAtual);
-                
-                // 4. Finalmente, atualizamos o painel com os totais corretos.
-                generalMetricsContainer.innerHTML = `
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Faturamento Total</p><p class="text-2xl font-bold">R$ ${totalAtual.toLocaleString('pt-BR')}</p></div>
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Crescimento MoM</p><p class="text-2xl font-bold">${crescimentoGeral.text}</p></div>
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Ticket Médio</p><p class="text-2xl font-bold text-gray-400">Em breve</p></div>
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Conversão</p><p class="text-2xl font-bold text-gray-400">Em breve</p></div>`;
-            });
                 const crescimentoGeral = calculateGrowth(totalAnterior, totalAtual);
                 generalMetricsContainer.innerHTML = `
                     <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Faturamento Total</p><p class="text-2xl font-bold">R$ ${totalAtual.toLocaleString('pt-BR')}</p></div>
