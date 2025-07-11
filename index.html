@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Performance de E-commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .nav-link {
+            transition: all 0.2s;
+        }
+        .nav-link.active {
+            background-color: #0284c7;
+            color: white;
+        }
+        [contenteditable="true"] {
+            background-color: #f0f9ff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        [contenteditable="true"]:focus {
+            background-color: #dbeafe;
+            box-shadow: 0 0 0 2px #38bdf8;
+        }
+        dialog::backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        .task-item.completed label {
+            text-decoration: line-through;
+            color: #9ca3af;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- TELA DE LOGIN -->
+    <div id="login-screen" class="fixed inset-0 bg-gray-800 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-lg shadow-2xl text-center w-full max-w-sm">
+            <img src="https://erp.grupotuguir.com.br/img/Logo_GrupoTuguir.png" alt="Logo Grupo Tuguir" class="mx-auto mb-6 h-12">
+            <h2 class="text-2xl font-bold mb-2">Acesso ao Dashboard</h2>
+            <p class="text-gray-600 mb-6">Por favor, insira a senha para continuar.</p>
+            <input type="password" id="password-input" class="w-full p-3 border rounded-md mb-4 text-center" placeholder="******">
+            <button id="login-button" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-3 rounded-md transition-colors">Entrar</button>
+            <p id="error-message" class="text-red-500 text-sm mt-4 h-4"></p>
+        </div>
+    </div>
+
+    <!-- CONTEÚDO PRINCIPAL (INICIALMENTE OCULTO) -->
+    <div id="main-content" class="container mx-auto p-4 max-w-7xl hidden">
+        <!-- Cabeçalho Principal -->
+        <header class="flex justify-between items-center mb-6">
+            <img src="https://erp.grupotuguir.com.br/img/Logo_GrupoTuguir.png" alt="Logo Grupo Tuguir" class="h-10">
+            <h1 class="text-2xl font-bold text-gray-700 hidden sm:block">Dashboard de Performance</h1>
+            <button id="logout-button" class="text-sm text-gray-500 hover:text-sky-600">Sair</button>
+        </header>
+        
+        <!-- Navegação Principal (Abas) -->
+        <nav class="bg-white rounded-lg shadow-md mb-6">
+            <ul class="flex justify-center items-center p-2 space-x-2">
+                <li><a href="#page-dashboard" class="nav-link active font-semibold py-2 px-4 rounded-md">📊 Dashboard</a></li>
+                <li><a href="#page-tarefas" class="nav-link font-semibold py-2 px-4 rounded-md">📋 Tarefas</a></li>
+                <li><a href="#page-configuracoes" class="nav-link font-semibold py-2 px-4 rounded-md">⚙️ Configurações</a></li>
+            </ul>
+        </nav>
+
+        <!-- Conteúdo das Páginas (Abas) -->
+        <main>
+            <!-- PÁGINA: DASHBOARD -->
+            <div id="page-dashboard" class="page-content">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                             <h3 class="text-xl font-bold mb-4">Analisador de Métricas (Trimestral)</h3>
+                             <div id="general-metrics" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"></div>
+                        </div>
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-bold mb-4">📅 Análise Trimestral e Estratégia</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marketplace</th>
+                                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mês Retrasado</th>
+                                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mês Anterior</th>
+                                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mês Atual</th>
+                                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tendência</th>
+                                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estratégia</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="mom-table-body" class="bg-white divide-y divide-gray-200"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold">🏆 Top 5 Produtos</h3>
+                            <select id="marketplace-selector" class="p-2 border rounded-md text-sm"></select>
+                        </div>
+                        <div id="top-products-container" class="space-y-4"></div>
+                        <button id="edit-top5-btn" class="mt-4 w-full bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-md">Editar Top 5</button>
+                    </div>
+                </div>
+            </div>
+            <!-- PÁGINA: TAREFAS -->
+            <div id="page-tarefas" class="page-content hidden"></div>
+            <!-- PÁGINA: CONFIGURAÇÕES -->
+            <div id="page-configuracoes" class="page-content hidden"></div>
+        </main>
+    </div>
+
+    <!-- MODAL E TEMPLATES -->
+    <dialog id="top5-modal" class="p-6 rounded-lg shadow-xl w-full max-w-2xl"></dialog>
+    <template id="tarefas-template">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-bold">Progresso das Tarefas</h2>
+                <span id="progress-text" class="font-bold text-sky-600">0%</span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-6">
+                <div id="progress-bar" class="bg-sky-500 h-4 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+            <div class="space-y-6">
+                <section>
+                    <h3 class="text-lg font-semibold mb-2">⚡ Tarefas Críticas (Manhã)</h3>
+                    <div id="daily-tasks" class="space-y-3"></div>
+                </section>
+                <section>
+                    <h3 class="text-lg font-semibold mb-2">🎯 Foco Estratégico da Semana</h3>
+                    <div id="weekly-focus" class="space-y-3"></div>
+                </section>
+                <section>
+                    <h3 class="text-lg font-semibold mb-2">💡 Oportunidades do Dia</h3>
+                    <div id="opportunity-tasks" class="space-y-3"></div>
+                </section>
+            </div>
+            <div class="text-center mt-6">
+                <button id="reset-button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-md">Resetar Tarefas</button>
+            </div>
+        </div>
+    </template>
+    <template id="configuracoes-template">
+         <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-bold mb-4">Gerenciar Marketplaces</h3>
+            <div id="marketplace-list" class="space-y-2 mb-4"></div>
+            <div class="flex space-x-2">
+                <input type="text" id="new-marketplace-name" placeholder="Nome do novo canal" class="flex-grow p-2 border rounded-md">
+                <button id="add-marketplace-btn" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md">Adicionar</button>
+            </div>
+        </div>
+    </template>
+    <template id="modal-template">
+        <h3 class="text-xl font-bold mb-4" id="modal-title"></h3>
+        <form id="top5-form" class="space-y-4"></form>
+        <div class="mt-6 flex justify-end space-x-2">
+            <button id="modal-cancel-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-md">Cancelar</button>
+            <button id="modal-save-btn" class="bg-sky-600 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded-md">Salvar</button>
+        </div>
+    </template>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- CONFIGURAÇÕES ---
+            const APP_PASSWORD = 'tuguir2025';
+
+            // --- ESTADO DA APLICAÇÃO ---
+            let state = { marketplaces: [], momData: {}, topProducts: {}, taskState: {} };
+
+            // --- ELEMENTOS DO DOM ---
+            const loginScreen = document.getElementById('login-screen');
+            const mainContent = document.getElementById('main-content');
+            const passwordInput = document.getElementById('password-input');
+            const loginButton = document.getElementById('login-button');
+            const errorMessage = document.getElementById('error-message');
+            const logoutButton = document.getElementById('logout-button');
+            const pages = document.querySelectorAll('.page-content');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const momTableBody = document.getElementById('mom-table-body');
+            const generalMetricsContainer = document.getElementById('general-metrics');
+            const marketplaceSelector = document.getElementById('marketplace-selector');
+            const topProductsContainer = document.getElementById('top-products-container');
+            const modal = document.getElementById('top5-modal');
+
+            // --- LÓGICA DE LOGIN ---
+            function checkLogin() {
+                if (sessionStorage.getItem('isLoggedIn') === 'true') {
+                    showDashboard();
+                } else {
+                    loginScreen.style.display = 'flex';
+                    mainContent.style.display = 'none';
+                }
+            }
+
+            function handleLogin() {
+                if (passwordInput.value === APP_PASSWORD) {
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    showDashboard();
+                } else {
+                    errorMessage.textContent = 'Senha incorreta.';
+                    passwordInput.classList.add('border-red-500');
+                }
+            }
+            
+            function handleLogout() {
+                sessionStorage.removeItem('isLoggedIn');
+                loginScreen.style.display = 'flex';
+                mainContent.style.display = 'none';
+            }
+
+            function showDashboard() {
+                loginScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                initializeApp();
+            }
+
+            loginButton.addEventListener('click', handleLogin);
+            passwordInput.addEventListener('keyup', (e) => {
+                 errorMessage.textContent = '';
+                 passwordInput.classList.remove('border-red-500');
+                 if (e.key === 'Enter') handleLogin();
+            });
+            logoutButton.addEventListener('click', handleLogout);
+
+            // --- INICIALIZAÇÃO DA APLICAÇÃO PRINCIPAL ---
+            function initializeApp() {
+                loadState();
+                setupEventListeners();
+                renderAll();
+                navigateTo(window.location.hash || '#page-dashboard');
+            }
+
+            function renderAll() {
+                renderPageContent();
+                renderMarketplaceSelector();
+                renderMomTable();
+                renderGeneralMetrics();
+                renderTopProducts();
+                renderTasks();
+                renderSettings();
+            }
+            
+            function renderPageContent() {
+                document.getElementById('page-tarefas').innerHTML = document.getElementById('tarefas-template').innerHTML;
+                document.getElementById('page-configuracoes').innerHTML = document.getElementById('configuracoes-template').innerHTML;
+                modal.innerHTML = document.getElementById('modal-template').innerHTML;
+            }
+
+            function setupEventListeners() {
+                navLinks.forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); navigateTo(link.getAttribute('href')); }));
+                marketplaceSelector.addEventListener('change', renderTopProducts);
+                
+                // Os botões abaixo são recriados, então os listeners precisam ser delegados ou recriados após a renderização
+                document.body.addEventListener('click', e => {
+                    if (e.target.id === 'edit-top5-btn') openTop5Modal();
+                    if (e.target.id === 'modal-cancel-btn') modal.close();
+                    if (e.target.id === 'modal-save-btn') saveTop5Form();
+                    if (e.target.id === 'add-marketplace-btn') addMarketplace();
+                    if (e.target.id === 'reset-button') resetTasks();
+                    if (e.target.classList.contains('remove-mkt-btn')) removeMarketplace(e);
+                });
+            }
+
+            function navigateTo(hash) {
+                pages.forEach(page => page.classList.add('hidden'));
+                const targetPage = document.querySelector(hash);
+                if (targetPage) targetPage.classList.remove('hidden');
+                navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === hash));
+                window.location.hash = hash;
+            }
+
+            function loadState() {
+                const defaultMarketplaces = [ { id: 'ml_full_1', name: 'Mercado Livre - Full 1' }, { id: 'dafiti', name: 'Dafiti' }, { id: 'site_b2c', name: 'Site B2C' } ];
+                state.marketplaces = JSON.parse(localStorage.getItem('marketplaces')) || defaultMarketplaces;
+                state.momData = JSON.parse(localStorage.getItem('momData')) || {};
+                state.topProducts = JSON.parse(localStorage.getItem('topProducts')) || {};
+                state.taskState = JSON.parse(localStorage.getItem('taskState')) || {};
+            }
+
+            function saveState() {
+                localStorage.setItem('marketplaces', JSON.stringify(state.marketplaces));
+                localStorage.setItem('momData', JSON.stringify(state.momData));
+                localStorage.setItem('topProducts', JSON.stringify(state.topProducts));
+                localStorage.setItem('taskState', JSON.stringify(state.taskState));
+            }
+            
+            // --- LÓGICA DO DASHBOARD (3 MESES) ---
+            function renderMomTable() {
+                momTableBody.innerHTML = '';
+                state.marketplaces.forEach(mkt => {
+                    const data = state.momData[mkt.id] || { retrasado: '0', anterior: '0', atual: '0' };
+                    const row = document.createElement('tr');
+                    row.dataset.id = mkt.id;
+                    row.innerHTML = `
+                        <td class="px-2 py-4 text-sm font-medium text-gray-900">${mkt.name}</td>
+                        <td class="px-2 py-4 text-sm text-gray-500" contenteditable="true" data-type="retrasado">${data.retrasado}</td>
+                        <td class="px-2 py-4 text-sm text-gray-500" contenteditable="true" data-type="anterior">${data.anterior}</td>
+                        <td class="px-2 py-4 text-sm text-gray-500" contenteditable="true" data-type="atual">${data.atual}</td>
+                        <td class="px-2 py-4 text-sm font-semibold" data-type="tendencia"></td>
+                        <td class="px-2 py-4 text-sm" data-type="estrategia"></td>
+                    `;
+                    momTableBody.appendChild(row);
+                    updateMomRow(row);
+
+                    row.querySelectorAll('[contenteditable="true"]').forEach(cell => {
+                        cell.addEventListener('input', () => {
+                            const value = cell.textContent;
+                            state.momData[mkt.id] = state.momData[mkt.id] || {};
+                            state.momData[mkt.id][cell.dataset.type] = value;
+                            updateMomRow(row);
+                            renderGeneralMetrics();
+                            saveState();
+                        });
+                    });
+                });
+            }
+            
+            function updateMomRow(row) {
+                const id = row.dataset.id;
+                const data = state.momData[id] || { retrasado: '0', anterior: '0', atual: '0' };
+                const retrasado = parseFloat(data.retrasado.replace(/\./g, '').replace(',', '.')) || 0;
+                const anterior = parseFloat(data.anterior.replace(/\./g, '').replace(',', '.')) || 0;
+                const atual = parseFloat(data.atual.replace(/\./g, '').replace(',', '.')) || 0;
+                
+                const growth1 = calculateGrowth(retrasado, anterior); // Mês anterior vs retrasado
+                const growth2 = calculateGrowth(anterior, atual); // Mês atual vs anterior
+
+                row.querySelector('[data-type="tendencia"]').innerHTML = `
+                    <div class="text-xs text-gray-500">${growth1.text}</div>
+                    <div class="text-sm">${growth2.text}</div>
+                `;
+                row.querySelector('[data-type="estrategia"]').innerHTML = getStrategySuggestion(growth1.growth, growth2.growth);
+            }
+
+            function calculateGrowth(v1, v2) {
+                if (v1 === 0 && v2 > 0) return { growth: 1000, text: '<span class="text-green-600">Novo</span>' };
+                if (v1 === 0) return { growth: 0, text: '<span class="text-gray-500">N/A</span>' };
+                const growth = ((v2 - v1) / v1) * 100;
+                const color = growth >= 0 ? 'text-green-600' : 'text-red-600';
+                const sign = growth > 0 ? '+' : '';
+                return { growth: growth, text: `<span class="${color}">${sign}${growth.toFixed(1)}%</span>` };
+            }
+
+            function getStrategySuggestion(g1, g2) {
+                if (g2 > g1 && g2 > 10) return '🚀 <span class="font-semibold">Acelerar!</span>';
+                if (g2 > 0 && g1 < 0) return '📈 <span class="font-semibold">Recuperação</span>';
+                if (g2 > 0) return '👍 <span class="font-semibold">Otimizar</span>';
+                if (g2 < g1 && g2 < 0) return '🚨 <span class="font-semibold">Ação Urgente!</span>';
+                if (g2 < 0) return '⚠️ <span class="font-semibold">Alerta</span>';
+                return '🤔 <span class="font-semibold">Analisar</span>';
+            }
+
+            function renderGeneralMetrics() {
+                let totalRetrasado = 0, totalAnterior = 0, totalAtual = 0;
+                Object.values(state.momData).forEach(data => {
+                    totalRetrasado += parseFloat(data.retrasado?.replace(/\./g, '').replace(',', '.')) || 0;
+                    totalAnterior += parseFloat(data.anterior?.replace(/\./g, '').replace(',', '.')) || 0;
+                    totalAtual += parseFloat(data.atual?.replace(/\./g, '').replace(',', '.')) || 0;
+                });
+                const crescimentoGeral = calculateGrowth(totalAnterior, totalAtual);
+                generalMetricsContainer.innerHTML = `
+                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Faturamento Total</p><p class="text-2xl font-bold">R$ ${totalAtual.toLocaleString('pt-BR')}</p></div>
+                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Crescimento MoM</p><p class="text-2xl font-bold">${crescimentoGeral.text}</p></div>
+                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Ticket Médio</p><p class="text-2xl font-bold text-gray-400">Em breve</p></div>
+                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Conversão</p><p class="text-2xl font-bold text-gray-400">Em breve</p></div>`;
+            }
+            
+            function renderMarketplaceSelector() {
+                marketplaceSelector.innerHTML = '';
+                state.marketplaces.forEach(mkt => {
+                    const option = document.createElement('option');
+                    option.value = mkt.id;
+                    option.textContent = mkt.name;
+                    marketplaceSelector.appendChild(option);
+                });
+            }
+            
+            function renderTopProducts() {
+                const selectedMktId = marketplaceSelector.value;
+                topProductsContainer.innerHTML = '';
+                const products = state.topProducts[selectedMktId] || [];
+                if (products.length === 0) {
+                    topProductsContainer.innerHTML = '<p class="text-center text-gray-500">Nenhum produto cadastrado. Clique em "Editar Top 5" para começar.</p>';
+                    return;
+                }
+                products.forEach((product, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center space-x-3 p-2 rounded-md hover:bg-gray-100';
+                    div.innerHTML = `
+                        <span class="font-bold text-lg text-gray-400">${index + 1}</span>
+                        <img src="${product.image || 'https://placehold.co/60x60/e2e8f0/94a3b8?text=Foto'}" alt="${product.name}" class="w-12 h-12 rounded-md object-cover">
+                        <div class="flex-1"><p class="font-semibold text-sm">${product.name || 'Nome do Produto'}</p><p class="text-xs text-gray-500">${product.sales || 0} vendas</p></div>`;
+                    topProductsContainer.appendChild(div);
+                });
+            }
+
+            function openTop5Modal() {
+                const selectedMktId = marketplaceSelector.value;
+                const mktName = state.marketplaces.find(m => m.id === selectedMktId)?.name;
+                const modalTitle = modal.querySelector('#modal-title');
+                const modalForm = modal.querySelector('#top5-form');
+                modalTitle.textContent = `Editar Top 5 - ${mktName}`;
+                modalForm.innerHTML = '';
+                const products = state.topProducts[selectedMktId] || [];
+                for (let i = 0; i < 5; i++) {
+                    const product = products[i] || {};
+                    modalForm.innerHTML += `
+                        <div class="p-3 border rounded-md"><p class="font-bold mb-2">Produto ${i + 1}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <input type="text" data-index="${i}" data-field="name" value="${product.name || ''}" placeholder="Nome do Produto" class="p-2 border rounded-md w-full">
+                            <input type="number" data-index="${i}" data-field="sales" value="${product.sales || ''}" placeholder="Nº de Vendas" class="p-2 border rounded-md w-full">
+                        </div>
+                        <input type="url" data-index="${i}" data-field="image" value="${product.image || ''}" placeholder="URL da Foto do Produto" class="mt-2 p-2 border rounded-md w-full"></div>`;
+                }
+                modal.showModal();
+            }
+
+            function saveTop5Form() {
+                const selectedMktId = marketplaceSelector.value;
+                const modalForm = modal.querySelector('#top5-form');
+                const newProducts = [];
+                for (let i = 0; i < 5; i++) {
+                    const name = modalForm.querySelector(`[data-index="${i}"][data-field="name"]`).value;
+                    const sales = modalForm.querySelector(`[data-index="${i}"][data-field="sales"]`).value;
+                    const image = modalForm.querySelector(`[data-index="${i}"][data-field="image"]`).value;
+                    if (name) newProducts.push({ name, sales, image });
+                }
+                state.topProducts[selectedMktId] = newProducts;
+                saveState();
+                renderTopProducts();
+                modal.close();
+            }
+            
+            // --- LÓGICA DE TAREFAS ---
+            const tasks = [ { id: 'task1', section: 'daily', title: 'Verificação Geral de Pedidos' }, { id: 'task2', section: 'daily', title: 'Análise Qualitativa de SAC e Reputação' }, { id: 'task3', section: 'daily', title: 'Check-up Rápido de Campanhas (Ads)' }, { id: 'task_monday', section: 'weekly', day: 1, title: 'Análise e Planejamento Geral' }, { id: 'task_tuesday', section: 'weekly', day: 2, title: 'Foco Total em Mercado Livre' }, { id: 'task_wednesday', section: 'weekly', day: 3, title: 'Foco nos Sites Próprios (B2C/B2B)' }, { id: 'task_thursday', section: 'weekly', day: 4, title: 'Foco nos Outros Marketplaces' }, { id: 'task_friday', section: 'weekly', day: 5, title: 'Otimização de Estoque e Projetos' }, { id: 'task_opp1', section: 'opportunity', title: 'Otimizar 1 Anúncio Campeão' }, { id: 'task_opp2', section: 'opportunity', title: 'Analisar 1 Concorrente Direto' }, { id: 'task_opp3', section: 'opportunity', title: 'Criar 1 Ação de "Queima de Estoque"' } ];
+            
+            function renderTasks() {
+                const dailyC = document.getElementById('daily-tasks'), weeklyC = document.getElementById('weekly-focus'), oppC = document.getElementById('opportunity-tasks');
+                if (!dailyC) return; // Abort if page not rendered yet
+                dailyC.innerHTML = weeklyC.innerHTML = oppC.innerHTML = '';
+                const today = new Date().getDay();
+                tasks.forEach(task => {
+                    const container = document.getElementById(`${task.section}-tasks`);
+                    if (container) {
+                        const isCompleted = state.taskState[task.id] || false;
+                        const div = document.createElement('div');
+                        div.className = `task-item bg-gray-100 p-3 rounded-md flex items-center space-x-3 ${isCompleted ? 'completed' : ''}`;
+                        if (task.section === 'weekly' && (task.day === today || (today === 0 && task.day === 1) || (today === 6 && task.day === 5))) div.classList.add('border-l-4', 'border-sky-500');
+                        div.innerHTML = `<input type="checkbox" id="${task.id}" class="h-5 w-5 rounded border-gray-300 text-sky-600 focus:ring-sky-500" ${isCompleted ? 'checked' : ''}><label for="${task.id}" class="font-semibold text-sm cursor-pointer">${task.title}</label>`;
+                        container.appendChild(div);
+                        div.querySelector('input').addEventListener('change', (e) => {
+                            state.taskState[task.id] = e.target.checked;
+                            div.classList.toggle('completed', e.target.checked);
+                            updateTaskProgress();
+                            saveState();
+                        });
+                    }
+                });
+                updateTaskProgress();
+            }
+            
+            function updateTaskProgress() {
+                const totalTasks = tasks.length;
+                const completedTasks = Object.values(state.taskState).filter(Boolean).length;
+                const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
+                const progressBar = document.getElementById('progress-bar');
+                const progressText = document.getElementById('progress-text');
+                if(progressBar) progressBar.style.width = `${progress}%`;
+                if(progressText) progressText.textContent = `${Math.round(progress)}%`;
+            }
+            
+            function resetTasks() {
+                if (confirm('Tem certeza que deseja resetar o progresso de todas as tarefas?')) {
+                    state.taskState = {};
+                    saveState();
+                    renderTasks();
+                }
+            }
+
+            // --- LÓGICA DE CONFIGURAÇÕES ---
+            function renderSettings() {
+                const list = document.getElementById('marketplace-list');
+                if(!list) return;
+                list.innerHTML = '';
+                state.marketplaces.forEach(mkt => {
+                    const div = document.createElement('div');
+                    div.className = 'flex justify-between items-center p-2 bg-gray-100 rounded-md';
+                    div.innerHTML = `<span>${mkt.name}</span><button data-id="${mkt.id}" class="remove-mkt-btn text-red-500 hover:text-red-700 font-bold">Remover</button>`;
+                    list.appendChild(div);
+                });
+            }
+
+            function addMarketplace() {
+                const input = document.getElementById('new-marketplace-name');
+                const name = input.value.trim();
+                if (name) {
+                    const id = name.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Date.now();
+                    state.marketplaces.push({ id, name });
+                    input.value = '';
+                    saveState();
+                    renderAll();
+                }
+            }
+
+            function removeMarketplace(e) {
+                const idToRemove = e.target.dataset.id;
+                state.marketplaces = state.marketplaces.filter(mkt => mkt.id !== idToRemove);
+                delete state.momData[idToRemove];
+                delete state.topProducts[idToRemove];
+                saveState();
+                renderAll();
+            }
+
+            // --- INICIALIZAÇÃO GERAL ---
+            checkLogin();
+        });
+    </script>
+
+</body>
+</html>
