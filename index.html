@@ -66,9 +66,10 @@
         
         <!-- Navegação Principal (Abas) -->
         <nav class="bg-white rounded-lg shadow-md mb-6">
-            <ul class="flex justify-center items-center p-2 space-x-2">
+            <ul class="flex flex-wrap justify-center items-center p-2 space-x-2">
                 <li><a href="#page-dashboard" class="nav-link active font-semibold py-2 px-4 rounded-md">📊 Dashboard</a></li>
-                <li><a href="#page-tarefas" class="nav-link font-semibold py-2 px-4 rounded-md">📋 Tarefas</a></li>
+                <li><a href="#page-analise" class="nav-link font-semibold py-2 px-4 rounded-md">💡 Análise e Ação</a></li>
+                <li><a href="#page-checklist" class="nav-link font-semibold py-2 px-4 rounded-md">📋 Checklist</a></li>
                 <li><a href="#page-configuracoes" class="nav-link font-semibold py-2 px-4 rounded-md">⚙️ Configurações</a></li>
             </ul>
         </nav>
@@ -92,7 +93,8 @@
                                             <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marketplace</th>
                                             <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mês Retrasado</th>
                                             <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mês Anterior</th>
-                                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mês Atual</th>
+                                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Mês Atual (Real)</th>
+                                            <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Projeção Mês Atual</th>
                                             <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tendência</th>
                                             <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estratégia</th>
                                         </tr>
@@ -112,8 +114,10 @@
                     </div>
                 </div>
             </div>
-            <!-- PÁGINA: TAREFAS -->
-            <div id="page-tarefas" class="page-content hidden"></div>
+            <!-- PÁGINA: ANÁLISE E AÇÃO -->
+            <div id="page-analise" class="page-content hidden"></div>
+            <!-- PÁGINA: CHECKLIST -->
+            <div id="page-checklist" class="page-content hidden"></div>
             <!-- PÁGINA: CONFIGURAÇÕES -->
             <div id="page-configuracoes" class="page-content hidden"></div>
         </main>
@@ -121,10 +125,67 @@
 
     <!-- MODAL E TEMPLATES -->
     <dialog id="top5-modal" class="p-6 rounded-lg shadow-xl w-full max-w-2xl"></dialog>
-    <template id="tarefas-template">
+    <template id="analise-template">
         <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 border-b pb-4">
+                <h2 class="text-2xl font-bold mb-2 sm:mb-0">Guia de Análise e Ação</h2>
+                <div class="flex items-center space-x-2">
+                    <label for="analise-selector" class="font-semibold">Analisar Canal:</label>
+                    <select id="analise-selector" class="p-2 border rounded-md text-sm"></select>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Coluna de Diagnóstico e Ação -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div id="diagnostico-alvo" class="p-4 rounded-lg">
+                        <!-- Conteúdo do diagnóstico será inserido aqui -->
+                    </div>
+                    <div id="analise-investimento" class="bg-gray-50 p-4 rounded-lg border">
+                        <!-- Conteúdo da análise de investimento será inserido aqui -->
+                    </div>
+                    <div id="proximos-passos" class="bg-sky-50 p-4 rounded-lg border border-sky-200">
+                        <!-- Conteúdo dos próximos passos será inserido aqui -->
+                    </div>
+                </div>
+
+                <!-- Coluna de Checklist de Investigação -->
+                <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="text-lg font-bold border-b pb-2">🎯 Aquisição de Clientes (CAC)</h4>
+                        <ul class="list-disc list-inside text-gray-700 mt-1 space-y-2">
+                            <li>O **tráfego (visitas)** caiu? Comparar com o mês anterior.</li>
+                            <li>O **custo por clique (CPC)** das campanhas de Ads aumentou?</li>
+                            <li>Nossas campanhas estão atingindo o **público-alvo** correto?</li>
+                            <li>O **ROAS** está baixo? O investimento está trazendo pouco retorno?</li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="text-lg font-bold border-b pb-2">🛒 Comportamento e Conversão</h4>
+                        <ul class="list-disc list-inside text-gray-700 mt-1 space-y-2">
+                            <li>A **Taxa de Conversão** diminuiu? Isso indica problemas na oferta ou na página.</li>
+                            <li>O **Ticket Médio (AOV)** caiu? Clientes estão comprando itens mais baratos?</li>
+                            <li>Analisar **abandono de carrinho**: o problema é o frete, checkout ou falta de opções de pagamento?</li>
+                            <li>A **qualidade dos anúncios** (fotos, títulos, descrições) está otimizada para conversão?</li>
+                        </ul>
+                    </div>
+                    <div class="space-y-4 md:col-span-2 p-4 bg-gray-50 rounded-lg">
+                        <h4 class="text-lg font-bold border-b pb-2">👍 Retenção e Confiança</h4>
+                        <ul class="list-disc list-inside text-gray-700 mt-1 space-y-2 md:grid md:grid-cols-2 md:gap-x-4">
+                            <li>Houve **ruptura de estoque** nos produtos da Curva A (mais vendidos)?</li>
+                            <li>Nossa **reputação** no canal caiu? Houve aumento de reclamações?</li>
+                            <li>A **taxa de devolução (RMA)** aumentou? Qual o motivo (produto errado, defeito)?</li>
+                            <li>O **tempo de envio** dos pedidos está competitivo e dentro do prazo?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <template id="checklist-template">
+        <div class="bg-white p-6 rounded-lg shadow-md max-w-4xl mx-auto">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl font-bold">Progresso das Tarefas</h2>
+                <h2 class="text-2xl font-bold">Checklist de Tarefas</h2>
                 <span id="progress-text" class="font-bold text-sky-600">0%</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-4 mb-6">
@@ -132,7 +193,7 @@
             </div>
             <div class="space-y-6">
                 <section>
-                    <h3 class="text-lg font-semibold mb-2">⚡ Tarefas Críticas (Manhã)</h3>
+                    <h3 class="text-lg font-semibold mb-2">⚡ Tarefas Críticas (Diárias)</h3>
                     <div id="daily-tasks" class="space-y-3"></div>
                 </section>
                 <section>
@@ -185,10 +246,6 @@
             const logoutButton = document.getElementById('logout-button');
             const pages = document.querySelectorAll('.page-content');
             const navLinks = document.querySelectorAll('.nav-link');
-            const momTableBody = document.getElementById('mom-table-body');
-            const generalMetricsContainer = document.getElementById('general-metrics');
-            const marketplaceSelector = document.getElementById('marketplace-selector');
-            const topProductsContainer = document.getElementById('top-products-container');
             const modal = document.getElementById('top5-modal');
 
             // --- LÓGICA DE LOGIN ---
@@ -234,8 +291,8 @@
             // --- INICIALIZAÇÃO DA APLICAÇÃO PRINCIPAL ---
             function initializeApp() {
                 loadState();
-                setupEventListeners();
                 renderAll();
+                setupEventListeners();
                 navigateTo(window.location.hash || '#page-dashboard');
             }
 
@@ -245,19 +302,20 @@
                 renderMomTable();
                 renderGeneralMetrics();
                 renderTopProducts();
-                renderTasks();
+                renderAnalysisPage();
+                renderChecklistPage();
                 renderSettings();
             }
             
             function renderPageContent() {
-                document.getElementById('page-tarefas').innerHTML = document.getElementById('tarefas-template').innerHTML;
+                document.getElementById('page-analise').innerHTML = document.getElementById('analise-template').innerHTML;
+                document.getElementById('page-checklist').innerHTML = document.getElementById('checklist-template').innerHTML;
                 document.getElementById('page-configuracoes').innerHTML = document.getElementById('configuracoes-template').innerHTML;
                 modal.innerHTML = document.getElementById('modal-template').innerHTML;
             }
 
             function setupEventListeners() {
                 navLinks.forEach(link => link.addEventListener('click', (e) => { e.preventDefault(); navigateTo(link.getAttribute('href')); }));
-                marketplaceSelector.addEventListener('change', renderTopProducts);
                 
                 document.body.addEventListener('click', e => {
                     if (e.target.id === 'edit-top5-btn') openTop5Modal();
@@ -267,12 +325,18 @@
                     if (e.target.id === 'reset-button') resetTasks();
                     if (e.target.classList.contains('remove-mkt-btn')) removeMarketplace(e);
                 });
+                
+                document.getElementById('marketplace-selector').addEventListener('change', renderTopProducts);
             }
 
             function navigateTo(hash) {
                 pages.forEach(page => page.classList.add('hidden'));
                 const targetPage = document.querySelector(hash);
-                if (targetPage) targetPage.classList.remove('hidden');
+                if (targetPage) {
+                    targetPage.classList.remove('hidden');
+                    if(hash === '#page-analise') renderAnalysisPage();
+                    if(hash === '#page-checklist') renderChecklistPage();
+                }
                 navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === hash));
                 window.location.hash = hash;
             }
@@ -292,8 +356,9 @@
                 localStorage.setItem('taskState', JSON.stringify(state.taskState));
             }
             
-            // --- LÓGICA DO DASHBOARD (3 MESES) ---
+            // --- LÓGICA DO DASHBOARD (3 MESES COM PROJEÇÃO) ---
             function renderMomTable() {
+                const momTableBody = document.getElementById('mom-table-body');
                 momTableBody.innerHTML = '';
                 state.marketplaces.forEach(mkt => {
                     const data = state.momData[mkt.id] || { retrasado: '0', anterior: '0', atual: '0' };
@@ -304,6 +369,7 @@
                         <td class="px-2 py-4 text-sm text-gray-500" contenteditable="true" data-type="retrasado">${data.retrasado}</td>
                         <td class="px-2 py-4 text-sm text-gray-500" contenteditable="true" data-type="anterior">${data.anterior}</td>
                         <td class="px-2 py-4 text-sm text-gray-500" contenteditable="true" data-type="atual">${data.atual}</td>
+                        <td class="px-2 py-4 text-sm font-bold text-sky-700" data-type="projecao"></td>
                         <td class="px-2 py-4 text-sm font-semibold" data-type="tendencia"></td>
                         <td class="px-2 py-4 text-sm" data-type="estrategia"></td>
                     `;
@@ -317,6 +383,7 @@
                             state.momData[mkt.id][cell.dataset.type] = value;
                             updateMomRow(row);
                             renderGeneralMetrics();
+                            renderAnalysisPage();
                             saveState();
                         });
                     });
@@ -330,8 +397,14 @@
                 const anterior = parseFloat(data.anterior.replace(/\./g, '').replace(',', '.')) || 0;
                 const atual = parseFloat(data.atual.replace(/\./g, '').replace(',', '.')) || 0;
                 
-                const growth1 = calculateGrowth(retrasado, anterior); // Mês anterior vs retrasado
-                const growth2 = calculateGrowth(anterior, atual); // Mês atual vs anterior
+                const now = new Date();
+                const currentDay = now.getDate();
+                const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+                const projection = (atual > 0 && currentDay > 0) ? (atual / currentDay) * daysInMonth : 0;
+                row.querySelector('[data-type="projecao"]').textContent = `R$ ${projection.toLocaleString('pt-BR', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
+                const growth1 = calculateGrowth(retrasado, anterior);
+                const growth2 = calculateGrowth(anterior, projection); 
 
                 row.querySelector('[data-type="tendencia"]').innerHTML = `
                     <div class="text-xs text-gray-500">${growth1.text}</div>
@@ -358,23 +431,32 @@
                 return '🤔 <span class="font-semibold">Analisar</span>';
             }
 
-            // CORREÇÃO APLICADA AQUI
             function renderGeneralMetrics() {
-                let totalRetrasado = 0, totalAnterior = 0, totalAtual = 0;
+                const generalMetricsContainer = document.getElementById('general-metrics');
+                let totalAnterior = 0, totalAtual = 0;
+                let totalProjection = 0;
+                const now = new Date();
+                const currentDay = now.getDate();
+                const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
                 Object.values(state.momData).forEach(data => {
-                    totalRetrasado += parseFloat(data.retrasado?.replace(/\./g, '').replace(',', '.')) || 0;
+                    const atualVal = parseFloat(data.atual?.replace(/\./g, '').replace(',', '.')) || 0;
                     totalAnterior += parseFloat(data.anterior?.replace(/\./g, '').replace(',', '.')) || 0;
-                    totalAtual += parseFloat(data.atual?.replace(/\./g, '').replace(',', '.')) || 0;
+                    totalAtual += atualVal;
+                    totalProjection += (atualVal > 0 && currentDay > 0) ? (atualVal / currentDay) * daysInMonth : 0;
                 });
-                const crescimentoGeral = calculateGrowth(totalAnterior, totalAtual);
+
+                const crescimentoGeralProjetado = calculateGrowth(totalAnterior, totalProjection);
+                
                 generalMetricsContainer.innerHTML = `
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Faturamento Total</p><p class="text-2xl font-bold">R$ ${totalAtual.toLocaleString('pt-BR')}</p></div>
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Crescimento MoM</p><p class="text-2xl font-bold">${crescimentoGeral.text}</p></div>
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Ticket Médio</p><p class="text-2xl font-bold text-gray-400">Em breve</p></div>
-                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Conversão</p><p class="text-2xl font-bold text-gray-400">Em breve</p></div>`;
+                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Faturamento Atual</p><p class="text-2xl font-bold">R$ ${totalAtual.toLocaleString('pt-BR')}</p></div>
+                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Faturamento Projetado</p><p class="text-2xl font-bold text-sky-700">R$ ${totalProjection.toLocaleString('pt-BR', {maximumFractionDigits: 0})}</p></div>
+                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Crescimento (Proj.)</p><p class="text-2xl font-bold">${crescimentoGeralProjetado.text}</p></div>
+                    <div class="p-2 rounded-lg bg-gray-100"><p class="text-sm text-gray-500">Ticket Médio</p><p class="text-2xl font-bold text-gray-400">Em breve</p></div>`;
             }
             
             function renderMarketplaceSelector() {
+                const marketplaceSelector = document.getElementById('marketplace-selector');
                 marketplaceSelector.innerHTML = '';
                 state.marketplaces.forEach(mkt => {
                     const option = document.createElement('option');
@@ -385,6 +467,8 @@
             }
             
             function renderTopProducts() {
+                const marketplaceSelector = document.getElementById('marketplace-selector');
+                const topProductsContainer = document.getElementById('top-products-container');
                 const selectedMktId = marketplaceSelector.value;
                 topProductsContainer.innerHTML = '';
                 const products = state.topProducts[selectedMktId] || [];
@@ -404,6 +488,7 @@
             }
 
             function openTop5Modal() {
+                const marketplaceSelector = document.getElementById('marketplace-selector');
                 const selectedMktId = marketplaceSelector.value;
                 const mktName = state.marketplaces.find(m => m.id === selectedMktId)?.name;
                 const modalTitle = modal.querySelector('#modal-title');
@@ -425,6 +510,7 @@
             }
 
             function saveTop5Form() {
+                const marketplaceSelector = document.getElementById('marketplace-selector');
                 const selectedMktId = marketplaceSelector.value;
                 const modalForm = modal.querySelector('#top5-form');
                 const newProducts = [];
@@ -440,12 +526,145 @@
                 modal.close();
             }
             
-            // --- LÓGICA DE TAREFAS ---
-            const tasks = [ { id: 'task1', section: 'daily', title: 'Verificação Geral de Pedidos' }, { id: 'task2', section: 'daily', title: 'Análise Qualitativa de SAC e Reputação' }, { id: 'task3', section: 'daily', title: 'Check-up Rápido de Campanhas (Ads)' }, { id: 'task_monday', section: 'weekly', day: 1, title: 'Análise e Planejamento Geral' }, { id: 'task_tuesday', section: 'weekly', day: 2, title: 'Foco Total em Mercado Livre' }, { id: 'task_wednesday', section: 'weekly', day: 3, title: 'Foco nos Sites Próprios (B2C/B2B)' }, { id: 'task_thursday', section: 'weekly', day: 4, title: 'Foco nos Outros Marketplaces' }, { id: 'task_friday', section: 'weekly', day: 5, title: 'Otimização de Estoque e Projetos' }, { id: 'task_opp1', section: 'opportunity', title: 'Otimizar 1 Anúncio Campeão' }, { id: 'task_opp2', section: 'opportunity', title: 'Analisar 1 Concorrente Direto' }, { id: 'task_opp3', section: 'opportunity', title: 'Criar 1 Ação de "Queima de Estoque"' } ];
+            // --- LÓGICA DE ANÁLISE E AÇÃO ---
+            function renderAnalysisPage() {
+                const analiseSelector = document.getElementById('analise-selector');
+                if (!analiseSelector) return;
+
+                const currentSelection = analiseSelector.value;
+                analiseSelector.innerHTML = '';
+                state.marketplaces.forEach(mkt => {
+                    const option = document.createElement('option');
+                    option.value = mkt.id;
+                    option.textContent = mkt.name;
+                    analiseSelector.appendChild(option);
+                });
+                
+                if (currentSelection) {
+                    analiseSelector.value = currentSelection;
+                }
+
+                analiseSelector.removeEventListener('change', handleAnalysisSelection);
+                analiseSelector.addEventListener('change', handleAnalysisSelection);
+
+                updateAnalysisContent(analiseSelector.value);
+            }
+
+            function handleAnalysisSelection(event) {
+                updateAnalysisContent(event.target.value);
+            }
+
+            function updateAnalysisContent(mktId) {
+                const targetContainer = document.getElementById('diagnostico-alvo');
+                const investmentContainer = document.getElementById('analise-investimento');
+                const nextStepsContainer = document.getElementById('proximos-passos');
+                if (!targetContainer || !investmentContainer || !nextStepsContainer) return;
+
+                const mkt = state.marketplaces.find(m => m.id === mktId);
+                if (!mkt) return;
+
+                const data = state.momData[mktId] || { anterior: '0', atual: '0' };
+                const anterior = parseFloat(data.anterior.replace(/\./g, '').replace(',', '.')) || 0;
+                const atual = parseFloat(data.atual.replace(/\./g, '').replace(',', '.')) || 0;
+                const { growth, text: growthText } = calculateGrowth(anterior, atual);
+
+                targetContainer.innerHTML = `
+                    <h4 class="text-lg font-bold">Diagnóstico: ${mkt.name}</h4>
+                    <p class="text-sm">Crescimento (vs. Mês Anterior): <span class="font-bold">${growthText}</span></p>
+                `;
+
+                investmentContainer.innerHTML = `
+                    <h4 class="font-bold">Análise de Investimento</h4>
+                    <div class="mt-2">
+                        <label for="analise-orcamento-input" class="block text-sm font-medium text-gray-700">Orçamento de Ads (Mês Atual)</label>
+                        <input type="number" id="analise-orcamento-input" class="mt-1 p-2 w-full border rounded-md" placeholder="Ex: 5000">
+                    </div>
+                    <div class="mt-2">
+                        <p class="text-sm">ROAS Calculado: <span id="analise-roas-display" class="font-bold text-lg">--</span></p>
+                        <p id="analise-roas-sugestao" class="text-xs text-gray-600">Insira o orçamento para calcular a eficiência.</p>
+                    </div>
+                `;
+
+                nextStepsContainer.innerHTML = `
+                    <h4 class="font-bold">Próximos Passos</h4>
+                    <div id="next-steps-content" class="text-sm text-gray-800 mt-2">Aguardando análise de ROAS...</div>
+                `;
+
+                const orcamentoInput = document.getElementById('analise-orcamento-input');
+                orcamentoInput.addEventListener('input', (e) => {
+                    const orcamento = parseFloat(e.target.value) || 0;
+                    const roas = (orcamento > 0) ? (atual / orcamento) : 0;
+                    
+                    const roasDisplay = document.getElementById('analise-roas-display');
+                    const roasSugestao = document.getElementById('analise-roas-sugestao');
+                    
+                    roasDisplay.textContent = roas.toFixed(2);
+                    if (roas >= 5) {
+                        roasDisplay.className = 'font-bold text-lg text-green-600';
+                        roasSugestao.textContent = 'Eficiente. O retorno sobre o investimento está saudável.';
+                    } else if (roas >= 2) {
+                        roasDisplay.className = 'font-bold text-lg text-yellow-600';
+                        roasSugestao.textContent = 'Ponto de atenção. Analise o custo por clique e a conversão.';
+                    } else {
+                         roasDisplay.className = 'font-bold text-lg text-red-600';
+                         roasSugestao.textContent = 'Ineficiente. Revise o público e os criativos das campanhas.';
+                    }
+                    updateNextSteps(growth, roas);
+                });
+            }
             
-            function renderTasks() {
-                const dailyC = document.getElementById('daily-tasks'), weeklyC = document.getElementById('weekly-focus'), oppC = document.getElementById('opportunity-tasks');
-                if (!dailyC) return; // Abort if page not rendered yet
+            function updateNextSteps(growth, roas) {
+                const nextStepsContent = document.getElementById('next-steps-content');
+                let content = '';
+                if (growth < 0 && roas < 2) {
+                    content = `🚨 **Ação Crítica:** O canal está em queda e o investimento não está trazendo retorno.
+                               <ul class="list-disc list-inside mt-2">
+                                   <li>**Ação 1:** Pause as campanhas de menor performance imediatamente para estancar o prejuízo.</li>
+                                   <li>**Ação 2:** Faça uma análise de competitividade de preço nos produtos da Curva A.</li>
+                                   <li>**Ação 3:** Verifique a reputação e as últimas avaliações do canal.</li>
+                               </ul>`;
+                } else if (growth > 10 && roas > 5) {
+                     content = `🚀 **Excelente Performance:** O canal está crescendo e o marketing é eficiente.
+                               <ul class="list-disc list-inside mt-2">
+                                   <li>**Ação 1:** Identifique as campanhas e produtos com melhor ROAS e considere aumentar o orçamento neles.</li>
+                                   <li>**Ação 2:** Garanta que os Top 5 produtos tenham estoque robusto para não perder vendas.</li>
+                               </ul>`;
+                } else if (growth < 0) {
+                     content = `📉 **Faturamento em Queda:** O crescimento está negativo, mas o ROAS pode estar bom.
+                               <ul class="list-disc list-inside mt-2">
+                                   <li>**Ação 1:** O problema pode não ser o tráfego pago. Analise a taxa de conversão.</li>
+                                   <li>**Ação 2:** Verifique se houve ruptura de estoque ou se um concorrente lançou uma promoção agressiva.</li>
+                               </ul>`;
+                } else {
+                    content = `🧐 **Análise Padrão:** O canal está estável.
+                               <ul class="list-disc list-inside mt-2">
+                                   <li>**Ação 1:** Busque otimizar o ROAS pausando palavras-chave ou anúncios de baixa performance.</li>
+                                   <li>**Ação 2:** Crie kits e combos com os produtos mais vendidos para aumentar o Ticket Médio (AOV).</li>
+                               </ul>`;
+                }
+                nextStepsContent.innerHTML = content;
+            }
+
+            // --- LÓGICA DE CHECKLIST ---
+            function renderChecklistPage() {
+                const tasks = [ 
+                    { id: 'task1', section: 'daily', title: 'Verificação Geral de Pedidos' }, 
+                    { id: 'task2', section: 'daily', title: 'Análise Qualitativa de SAC e Reputação' }, 
+                    { id: 'task3', section: 'daily', title: 'Check-up Rápido de Campanhas (Ads)' }, 
+                    { id: 'task_monday', section: 'weekly', day: 1, title: 'Análise e Planejamento Geral' }, 
+                    { id: 'task_tuesday', section: 'weekly', day: 2, title: 'Foco Total em Mercado Livre' }, 
+                    { id: 'task_wednesday', section: 'weekly', day: 3, title: 'Foco nos Sites Próprios (B2C/B2B)' }, 
+                    { id: 'task_thursday', section: 'weekly', day: 4, title: 'Foco nos Outros Marketplaces' }, 
+                    { id: 'task_friday', section: 'weekly', day: 5, title: 'Otimização de Estoque e Projetos' },
+                    { id: 'task_opp1', section: 'opportunity', title: 'Otimizar 1 Anúncio Campeão' },
+                    { id: 'task_opp2', section: 'opportunity', title: 'Analisar 1 Concorrente Direto' },
+                    { id: 'task_opp3', section: 'opportunity', title: 'Criar 1 Ação de "Queima de Estoque"' }
+                ];
+
+                const dailyC = document.getElementById('daily-tasks'), 
+                      weeklyC = document.getElementById('weekly-focus'),
+                      oppC = document.getElementById('opportunity-tasks');
+                if (!dailyC) return; 
                 dailyC.innerHTML = weeklyC.innerHTML = oppC.innerHTML = '';
                 const today = new Date().getDay();
                 tasks.forEach(task => {
@@ -460,15 +679,15 @@
                         div.querySelector('input').addEventListener('change', (e) => {
                             state.taskState[task.id] = e.target.checked;
                             div.classList.toggle('completed', e.target.checked);
-                            updateTaskProgress();
+                            updateTaskProgress(tasks);
                             saveState();
                         });
                     }
                 });
-                updateTaskProgress();
+                updateTaskProgress(tasks);
             }
             
-            function updateTaskProgress() {
+            function updateTaskProgress(tasks) {
                 const totalTasks = tasks.length;
                 const completedTasks = Object.values(state.taskState).filter(Boolean).length;
                 const progress = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
@@ -482,7 +701,7 @@
                 if (confirm('Tem certeza que deseja resetar o progresso de todas as tarefas?')) {
                     state.taskState = {};
                     saveState();
-                    renderTasks();
+                    renderChecklistPage();
                 }
             }
 
